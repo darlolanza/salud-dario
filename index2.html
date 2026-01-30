@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Historial Clínico - Dario Oscar Lanza</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(1rem); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .animate-in { animation-fill-mode: forwards; }
+        .fade-in { animation-name: fadeIn; }
+        .slide-in-from-bottom-4 { animation-name: slideUp; }
+        .duration-500 { animation-duration: 500ms; }
+        
+        body { background-color: #f8fafc; }
+    </style>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.263.1"
+      }
+    }
+    </script>
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module">
+        import React, { useState } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { 
+          FileText, Calendar, User, Clipboard, ShieldCheck, Droplet,
+          AlertCircle, Thermometer, Stethoscope, Activity, ChevronDown, 
+          ChevronUp, Pill
+        } from 'lucide-react';
+
+        const App = () => {
+          const [activeTab, setActiveTab] = useState('dashboard');
+          const [expandedEvents, setExpandedEvents] = useState({});
+
+          // Cálculo de edad dinámica (Estimada base 1978 según registros de 2021 con 42 años)
+          const birthYear = 1978;
+          const currentYear = new Date().getFullYear();
+          const currentAge = currentYear - birthYear;
+
+          const patientData = {
+            name: "Dario Oscar Lanza",
+            id: "26.622.688",
+            bloodType: "0 Rh Negativo",
+            birthDate: "1978 (Estimada)",
+            age: currentAge,
+            conditions: [
+              "Diabetes Mellitus Tipo 2",
+              "Hipertensión Arterial",
+              "Cardiopatía Isquémica (CRM 3 Vasos - 2021)",
+              "Válvula Aórtica Bicúspide"
+            ],
+            meds: [
+              { name: "Dapagliflozina", dose: "10mg", freq: "1 vez al día" },
+              { name: "Enalapril", dose: "10mg", freq: "cada 12h" },
+              { name: "Metformina", dose: "850mg", freq: "cada 12h" },
+              { name: "Aspirina (AAS)", dose: "100mg", freq: "1 vez al día" },
+              { name: "Rosuvastatina", dose: "20mg", freq: "noche" },
+              { name: "Bisoprolol", dose: "5mg", freq: "1 vez al día" }
+            ]
+          };
+
+          const detailedTimeline = [
+            {
+              date: "2023-09-08",
+              time: "13:00",
+              title: "Alta Sanatorial - Prostatitis",
+              dept: "Clínica Médica",
+              details: [
+                "Evolución favorable, afebril y hemodinámicamente estable.",
+                "Diuresis positiva, sin dolor espontáneo.",
+                "Plan de alta con pautas de alarma y seguimiento ambulatorio."
+              ]
+            },
+            {
+              date: "2023-09-05",
+              time: "18:27",
+              title: "Internación por Prostatitis Aguda",
+              dept: "Clínica Médica / Urología",
+              details: [
+                "Ingreso por cuadro febril y dolor perineal/anal de 48hs de evolución.",
+                "Diagnóstico: Prostatitis (CIE-10 N11.0).",
+                "Laboratorio de ingreso: Hto 39.4, Hb 14.1, Blancos 8500, Glucemia 182, Urea 25, Creatinina 0.75.",
+                "Microbiología (Urocultivo): Positivo para Staphylococcus Aureus multisensible.",
+                "Tratamiento instaurado: Ceftriaxona endovenosa."
+              ]
+            },
+            {
+              date: "2023-02-23",
+              time: "18:06",
+              title: "Estudio: Audiometría y Timpanometría",
+              dept: "Fonoaudiología",
+              details: [
+                "Motivo: Examen de oídos y de la audición (Z01.1).",
+                "Oído Derecho: Vía aérea con umbrales 10-20-35-50-55-75-85 dB. Timpanometría pico en cero.",
+                "Oído Izquierdo: Vía aérea con umbrales 10-10-10-15-15-45-55 dB. Timpanometría pico en cero.",
+                "Conclusión: Se entrega informe al paciente."
+              ]
+            },
+            {
+              date: "2023-02-22",
+              time: "10:22",
+              title: "Estudio: SPECT Cardíaco",
+              dept: "Medicina Nuclear",
+              details: [
+                "Práctica: 902034 - Material Radioactivo para SPECT.",
+                "Hallazgo previo (ref): Identificación de Válvula Aórtica Bicúspide en ecocardiograma."
+              ]
+            },
+            {
+              date: "2022-03-15",
+              time: "09:00",
+              title: "Control Anual Post-CRM",
+              dept: "Cardiología",
+              details: [
+                "SPECT Miocárdico: Evidencia de isquemia moderada en cara inferior.",
+                "Prueba Ergométrica Graduada (PEG): Negativa para angor o cambios eléctricos a 12 METS.",
+                "Conducta: Mantener tratamiento médico optimizado."
+              ]
+            },
+            {
+              date: "2021-08-25",
+              time: "Guardia",
+              title: "Consulta: Dolor Infracostal",
+              dept: "Guardia Médica",
+              details: [
+                "Dolor punzante infracostal derecho.",
+                "Laboratorio y Troponina (3.2) dentro de parámetros normales.",
+                "Interpretación: Dolor de origen muscular/osteomuscular."
+              ]
+            },
+            {
+              date: "2021-07-14",
+              time: "Guardia",
+              title: "Consulta: Dolor Epigástrico",
+              dept: "Guardia Médica",
+              details: [
+                "Dolor en epigastrio irradiado a hombros, aumenta con respiración.",
+                "Troponinas negativas.",
+                "Ecocardiograma de Estrés: Negativo para isquemia aguda."
+              ]
+            },
+            {
+              date: "2021-04-12",
+              time: "17:22",
+              title: "Cirugía: Revascularización Miocárdica (CRM)",
+              dept: "Quirófano",
+              details: [
+                "Diagnóstico Pre/Post: Cardiomiopatía Isquémica.",
+                "Procedimiento: Derivación Aorto-Coronaria (Bypass) con Cell Saver.",
+                "Cirujano: Dr. Malusardi Adriano.",
+                "Técnica: Esternotomía mediana. Heparinización general. Canulación estándar.",
+                "Puentes realizados (2):",
+                "1. Mamaria Interna a Descendente Anterior (LIMA-DA).",
+                "2. Puente Venoso (Safena) a Obtusa Marginal (PVS-OM3)."
+              ]
+            },
+            {
+              date: "2021-03-25",
+              time: "15:04",
+              title: "Alta Sanatorial Pre-Quirúrgica",
+              dept: "Clínica Médica",
+              details: [
+                "Paciente cursó 3er día de internación por Angina Inestable.",
+                "Evolución: Hemodinámicamente estable, sin recurrencia de angor.",
+                "Plan: Alta a domicilio a la espera de cirugía de revascularización programada."
+              ]
+            },
+            {
+              date: "2021-03-23",
+              time: "Programado",
+              title: "Estudio: Cinecoronariografía (CCG)",
+              dept: "Hemodinamia",
+              details: [
+                "Resultado: Enfermedad coronaria severa de tres vasos.",
+                "Lesiones críticas en Descendente Anterior, Circunfleja y Coronaria Derecha.",
+                "Resolución: Se indica tratamiento quirúrgico (CRM)."
+              ]
+            },
+            {
+              date: "2021-03-22",
+              time: "00:10",
+              title: "Ingreso a Unidad de Terapia Intensiva (UTI)",
+              dept: "UTI",
+              details: [
+                "Diagnóstico de ingreso: R07.2 Dolor Precordial / Síndrome Coronario Agudo.",
+                "Historia: Dolor subintrante de 48hs de evolución.",
+                "Evento actual: Dolor opresivo 7/10 en actividad física, irradiado a brazo izquierdo.",
+                "Enzimas: Troponina duplicó su valor basal (16 -> 32 pg/ml) pero se mantiene negativa para IAM masivo en ese momento."
+              ]
+            },
+            {
+              date: "2021-03-21",
+              time: "18:41",
+              title: "Primera Consulta e Internación",
+              dept: "Guardia / Observación",
+              details: [
+                "Motivo: Dolor torácico.",
+                "Examen Físico: TA 90/60, FC 70, SatO2 98%. Lúcido y vigil.",
+                "Antecedentes recabados: DBT Tipo 2 (6 años evol), HTA.",
+                "Indicación: Internación en observación para seriado de enzimas y control."
+              ]
+            }
+          ];
+
+          const toggleEvent = (index) => {
+            setExpandedEvents(prev => ({
+              ...prev,
+              [index]: !prev[index]
+            }));
+          };
+
+          return (
+            <div className="min-h-screen bg-slate-50 text-slate-900 pb-20 md:pb-8 font-sans">
+              {/* Sidebar Desktop */}
+              <aside className="fixed left-0 top-0 h-full w-20 lg:w-64 bg-white border-r border-slate-200 hidden md:flex flex-col items-center lg:items-start p-6 z-40">
+                <div className="flex items-center gap-3 mb-12">
+                  <div className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-white shadow-sm">
+                    <ShieldCheck size={24} />
+                  </div>
+                  <span className="text-xl font-bold tracking-tight hidden lg:block text-slate-800">HISTORIAL<span className="text-slate-500">CLÍNICO</span></span>
+                </div>
+
+                <nav className="space-y-2 w-full">
+                  {[
+                    { id: 'dashboard', icon: <User />, label: 'Datos del Paciente' },
+                    { id: 'timeline', icon: <FileText />, label: 'Informe Detallado' },
+                  ].map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                      className={`w-full flex items-center gap-4 p-3 rounded-lg transition-all text-sm font-semibold ${
+                        activeTab === item.id 
+                        ? 'bg-slate-100 text-slate-900 border border-slate-200' 
+                        : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+                      }`}
+                    >
+                      <span className={activeTab === item.id ? 'text-slate-900' : ''}>
+                        {item.icon}
+                      </span>
+                      <span className="hidden lg:block">{item.label}</span>
+                    </button>
+                  ))}
+                </nav>
+              </aside>
+
+              {/* Main Content */}
+              <main className="md:ml-20 lg:ml-64 p-4 md:p-8 max-w-5xl mx-auto">
+                
+                {/* Header Section */}
+                <header className="mb-8 border-b border-slate-200 pb-6">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tight mb-2">
+                        {patientData.name}
+                      </h1>
+                      
+                      {/* Condiciones Destacadas */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {patientData.conditions.map((condition, index) => (
+                          <span key={index} className="px-3 py-1 bg-red-50 text-red-700 border border-red-100 rounded text-xs font-bold uppercase tracking-wide">
+                            {condition}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Datos Demográficos en Grilla */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-2 gap-x-8 text-sm">
+                        <div>
+                          <span className="block text-xs font-bold text-slate-400 uppercase">Fecha Nacimiento</span>
+                          <span className="font-semibold text-slate-700">{patientData.birthDate}</span>
+                        </div>
+                        <div>
+                          <span className="block text-xs font-bold text-slate-400 uppercase">Edad Actual</span>
+                          <span className="font-semibold text-slate-700">{patientData.age} Años</span>
+                        </div>
+                        <div>
+                          <span className="block text-xs font-bold text-slate-400 uppercase">DNI</span>
+                          <span className="font-semibold text-slate-700">{patientData.id}</span>
+                        </div>
+                        <div>
+                          <span className="block text-xs font-bold text-slate-400 uppercase">Grupo Sanguíneo</span>
+                          <span className="font-semibold text-slate-700 flex items-center gap-1">
+                            <Droplet size={14} className="text-red-500" fill="currentColor" /> {patientData.bloodType}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="hidden sm:block">
+                       <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 font-bold text-xl border border-slate-200">
+                         DL
+                       </div>
+                    </div>
+                  </div>
+                </header>
+
+                {activeTab === 'dashboard' && (
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                      <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center gap-2">
+                        <Clipboard className="text-slate-500" size={20} />
+                        <h2 className="text-lg font-bold text-slate-800">Esquema Farmacológico Actual</h2>
+                      </div>
+                      
+                      <div className="divide-y divide-slate-100">
+                        {patientData.meds.map((med, i) => (
+                          <div key={i} className="p-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-slate-50/50 transition-colors">
+                            <div className="flex items-start gap-3">
+                              <div className="mt-1 p-1.5 bg-blue-50 text-blue-600 rounded">
+                                <Pill size={16} />
+                              </div>
+                              <div>
+                                <p className="font-bold text-slate-900 text-base">{med.name}</p>
+                                <p className="text-sm text-slate-500 font-medium">Dosis: {med.dose}</p>
+                              </div>
+                            </div>
+                            <div className="pl-10 sm:pl-0">
+                              <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold uppercase rounded border border-slate-200">
+                                {med.freq}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="bg-blue-50/50 p-4 border-t border-slate-200 text-center">
+                         <p className="text-xs text-blue-800 font-medium">
+                           Total: {patientData.meds.length} medicamentos activos
+                         </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'timeline' && (
+                  <div className="animate-in fade-in duration-500">
+                     <div className="flex items-center justify-between mb-6">
+                       <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                         <FileText className="text-slate-500" />
+                         Informe Cronológico Detallado
+                       </h2>
+                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider bg-slate-50 px-2 py-1 rounded border border-slate-200">
+                         Orden Descendente (Más reciente primero)
+                       </span>
+                     </div>
+
+                     <div className="space-y-4">
+                       {detailedTimeline.map((event, index) => {
+                         const isExpanded = expandedEvents[index] ?? true; // Default to expanded for report view
+                         
+                         return (
+                           <div key={index} className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+                             {/* Event Header */}
+                             <div 
+                               onClick={() => toggleEvent(index)}
+                               className="cursor-pointer p-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50 transition-colors border-l-4 border-blue-600"
+                             >
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-3 mb-1">
+                                    <span className="font-mono text-sm font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                                      {event.date}
+                                    </span>
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                      {event.time}
+                                    </span>
+                                  </div>
+                                  <h3 className="text-lg font-bold text-slate-900 leading-tight">
+                                    {event.title}
+                                  </h3>
+                                  <p className="text-sm text-blue-600 font-semibold mt-1">
+                                    {event.dept}
+                                  </p>
+                                </div>
+                                <div className="text-slate-400">
+                                  {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                                </div>
+                             </div>
+
+                             {/* Event Details */}
+                             {isExpanded && (
+                               <div className="px-6 pb-6 pt-2 border-t border-slate-50 bg-slate-50/30">
+                                 <ul className="space-y-2">
+                                   {event.details.map((detail, idx) => (
+                                     <li key={idx} className="text-sm text-slate-700 leading-relaxed flex items-start gap-2">
+                                       <span className="mt-1.5 w-1.5 h-1.5 bg-slate-400 rounded-full flex-shrink-0" />
+                                       {detail}
+                                     </li>
+                                   ))}
+                                 </ul>
+                               </div>
+                             )}
+                           </div>
+                         );
+                       })}
+                     </div>
+                  </div>
+                )}
+
+              </main>
+
+              {/* Mobile Nav */}
+              <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 flex justify-around items-center md:hidden z-50">
+                <button 
+                  onClick={() => setActiveTab('dashboard')}
+                  className={`flex flex-col items-center gap-1 ${activeTab === 'dashboard' ? 'text-blue-600' : 'text-slate-400'}`}
+                >
+                  <User size={24} />
+                  <span className="text-[10px] font-bold uppercase">Paciente</span>
+                </button>
+                <button 
+                  onClick={() => setActiveTab('timeline')}
+                  className={`flex flex-col items-center gap-1 ${activeTab === 'timeline' ? 'text-blue-600' : 'text-slate-400'}`}
+                >
+                  <FileText size={24} />
+                  <span className="text-[10px] font-bold uppercase">Informe</span>
+                </button>
+              </nav>
+            </div>
+          );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
