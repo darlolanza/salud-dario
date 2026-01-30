@@ -76,3 +76,436 @@
               date: "21 Mar 2021",
               title: "Angina Inestable",
               category: "Emergencia",
+              description: "Ingreso por dolor retroesternal opresivo (7/10). Troponina elevada (32 pg/ml).",
+              fullDetail: "Estudio de Cinecoronariografía reveló enfermedad severa de 3 vasos. Se decide plan quirúrgico de revascularización.",
+              status: "critical",
+              icon: <AlertCircle className="text-red-500" />
+            },
+            {
+              id: 2,
+              date: "12 Abr 2021",
+              title: "Cirugía de Bypass (CRM)",
+              category: "Quirúrgico",
+              description: "Revascularización Miocárdica con 2 puentes (Mamario y Venoso).",
+              fullDetail: "Procedimiento exitoso. Puente mamaria a DA y venoso a OM. Postoperatorio en UTI con evolución favorable.",
+              status: "action",
+              icon: <Heart className="text-blue-600" />
+            },
+            {
+              id: 3,
+              date: "15 Mar 2022",
+              title: "Evaluación SPECT",
+              category: "Estudio",
+              description: "Control post-cirugía. Isquemia moderada detectada en región inferior.",
+              fullDetail: "Prueba de esfuerzo (PEG) negativa para síntomas a 12 METS. Se mantiene manejo médico preventivo.",
+              status: "stable",
+              icon: <Activity className="text-emerald-500" />
+            },
+            {
+              id: 4,
+              date: "07 Feb 2023",
+              title: "Hallazgo Valvular",
+              category: "Diagnóstico",
+              description: "Identificación de Válvula Aórtica Bicúspide mediante ecocardiografía.",
+              fullDetail: "Hallazgo congénito que requiere seguimiento periódico para evaluar estenosis o insuficiencia a futuro.",
+              status: "info",
+              icon: <Stethoscope className="text-purple-500" />
+            },
+            {
+              id: 5,
+              date: "05 Sep 2023",
+              title: "Prostatitis Aguda",
+              category: "Infeccioso",
+              description: "Internación por cuadro febril y dolor perineal. Urocultivo positivo.",
+              fullDetail: "Infección por S. Aureus multisensible. Tratamiento con Ceftriaxona EV y luego TMS oral. Alta con buena respuesta.",
+              status: "alert",
+              icon: <Thermometer className="text-orange-500" />
+            }
+          ];
+
+          const labs = [
+            { month: 'Mar 21', glucosa: 195, tropo: 32, hto: 42 },
+            { month: 'Abr 21', glucosa: 160, tropo: 12, hto: 38 },
+            { month: 'Mar 22', glucosa: 145, tropo: 4, hto: 41 },
+            { month: 'Sep 23', glucosa: 182, tropo: 3.2, hto: 39.4 }
+          ];
+
+          const HealthChart = ({ data, dataKey, color, label, unit }) => {
+            const maxVal = Math.max(...data.map(d => d[dataKey]));
+            const minVal = Math.min(...data.map(d => d[dataKey]));
+            const points = data.map((d, i) => {
+              const x = (i / (data.length - 1)) * 100;
+              const y = 100 - ((d[dataKey] - (minVal * 0.5)) / (maxVal - (minVal * 0.5)) * 100);
+              return `${x},${y}`;
+            }).join(' ');
+
+            return (
+              <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-tighter">{label}</p>
+                    <h4 className="text-2xl font-black text-slate-800">{data[data.length - 1][dataKey]} <span className="text-sm font-normal text-slate-400">{unit}</span></h4>
+                  </div>
+                  <div className={`p-2 rounded-xl ${color.replace('text', 'bg')}/10 ${color}`}>
+                    <TrendingUp size={18} />
+                  </div>
+                </div>
+                <div className="h-16 w-full mt-2">
+                  <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full overflow-visible">
+                    <polyline
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className={color}
+                      points={points}
+                    />
+                  </svg>
+                </div>
+                <div className="flex justify-between mt-2">
+                  {data.map((d, i) => (
+                    <span key={i} className="text-[10px] font-bold text-slate-300">{d.month}</span>
+                  ))}
+                </div>
+              </div>
+            );
+          };
+
+          return (
+            <div className="min-h-screen bg-slate-50 text-slate-900 pb-24 md:pb-8">
+              {/* Sidebar Desktop */}
+              <aside className="fixed left-0 top-0 h-full w-20 lg:w-64 bg-white border-r border-slate-200 hidden md:flex flex-col items-center lg:items-start p-6 z-40">
+                <div className="flex items-center gap-3 mb-12">
+                  <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                    <ShieldCheck size={24} />
+                  </div>
+                  <span className="text-xl font-black tracking-tight hidden lg:block">HEAL <span className="text-blue-600">HUB</span></span>
+                </div>
+
+                <nav className="space-y-3 w-full">
+                  {[
+                    { id: 'dashboard', icon: <Activity />, label: 'Resumen' },
+                    { id: 'timeline', icon: <Calendar />, label: 'Cronología' },
+                    { id: 'labs', icon: <FileText />, label: 'Análisis' },
+                    { id: 'profile', icon: <User />, label: 'Perfil' }
+                  ].map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                      className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all group ${
+                        activeTab === item.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
+                      }`}
+                    >
+                      <span className={activeTab === item.id ? 'text-white' : 'group-hover:text-blue-500 transition-colors'}>
+                        {item.icon}
+                      </span>
+                      <span className="font-bold hidden lg:block">{item.label}</span>
+                    </button>
+                  ))}
+                </nav>
+              </aside>
+
+              {/* Main Content Area */}
+              <main className="md:ml-20 lg:ml-64 p-4 md:p-10 max-w-6xl mx-auto">
+                
+                {/* Top Navigation / Search */}
+                <header className="flex justify-between items-center mb-10">
+                  <div>
+                    <h1 className="text-3xl font-black tracking-tight text-slate-800">
+                      {activeTab === 'dashboard' ? 'Bienvenido, Darío' : 
+                       activeTab === 'timeline' ? 'Historial Clínico' : 
+                       activeTab === 'labs' ? 'Análisis Detallado' : 'Perfil del Paciente'}
+                    </h1>
+                    <p className="text-slate-400 font-medium">Gestión inteligente de salud personalizada</p>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-4 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
+                    <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 font-black">DL</div>
+                  </div>
+                </header>
+
+                {activeTab === 'dashboard' && (
+                  <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
+                    {/* Health Hero Card */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                      <div className="lg:col-span-2 bg-slate-900 rounded-[40px] p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-200">
+                        <div className="relative z-10">
+                          <div className="flex items-center gap-2 mb-8">
+                            <span className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-black tracking-widest uppercase">Paciente Crítico</span>
+                          </div>
+                          <h2 className="text-4xl font-black mb-4 leading-none">{patientData.name}</h2>
+                          <div className="flex flex-wrap gap-4 mt-8">
+                            <div className="bg-white/10 backdrop-blur-md px-5 py-3 rounded-3xl border border-white/5">
+                              <p className="text-[10px] uppercase font-bold text-slate-400 mb-1">DNI</p>
+                              <p className="font-bold text-lg">{patientData.id}</p>
+                            </div>
+                            <div className="bg-white/10 backdrop-blur-md px-5 py-3 rounded-3xl border border-white/5">
+                              <p className="text-[10px] uppercase font-bold text-slate-400 mb-1">Grupo Sanguíneo</p>
+                              <p className="font-bold text-lg flex items-center gap-2">
+                                <Droplet size={18} className="text-red-400" /> {patientData.bloodType}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        {/* Decorative background circle */}
+                        <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+                      </div>
+
+                      <div className="bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm">
+                        <h3 className="text-xl font-black mb-6 flex items-center gap-2">
+                          <Clipboard size={20} className="text-blue-600" /> Medicación
+                        </h3>
+                        <div className="space-y-4">
+                          {patientData.meds.slice(0, 3).map((med, i) => (
+                            <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                              <div>
+                                <p className="font-bold text-slate-800">{med.name}</p>
+                                <p className="text-[10px] text-slate-400 uppercase font-black">{med.dose}</p>
+                              </div>
+                              <div className="text-[10px] font-bold px-3 py-1 bg-white rounded-lg shadow-sm border border-slate-100">
+                                {med.freq}
+                              </div>
+                            </div>
+                          ))}
+                          <button onClick={() => setActiveTab('profile')} className="w-full text-center text-xs font-bold text-blue-600 hover:text-blue-700 mt-2">VER LISTA COMPLETA</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Metrics Section */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                      <HealthChart data={labs} dataKey="glucosa" label="Glucemia" unit="mg/dL" color="text-orange-500" />
+                      <HealthChart data={labs} dataKey="hto" label="Hematocrito" unit="%" color="text-blue-500" />
+                      <HealthChart data={labs} dataKey="tropo" label="Troponina I" unit="pg/mL" color="text-red-500" />
+                    </div>
+
+                    {/* Alerts/Status */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm">
+                        <h3 className="text-xl font-black mb-6 flex items-center gap-2">
+                          <Info size={20} className="text-purple-600" /> Condición Clínica
+                        </h3>
+                        <div className="grid grid-cols-1 gap-3">
+                          {patientData.conditions.map((c, i) => (
+                            <div key={i} className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-blue-200 transition-colors">
+                              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                              <span className="text-sm font-bold text-slate-700">{c}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="bg-blue-600 p-8 rounded-[40px] text-white shadow-xl shadow-blue-100 flex flex-col justify-between">
+                        <div>
+                          <h3 className="text-xl font-black mb-2">Resumen de Seguimiento</h3>
+                          <p className="text-blue-100 text-sm leading-relaxed opacity-80">
+                            Tu cirugía CRM (2021) se mantiene estable. El hallazgo de la válvula bicúspide (2023) requiere control ecocardiográfico anual.
+                          </p>
+                        </div>
+                        <button className="mt-6 bg-white text-blue-600 font-black py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-50 transition-colors">
+                          SOLICITAR TURNO <ArrowUpRight size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'timeline' && (
+                  <div className="animate-in fade-in duration-500 max-w-3xl mx-auto">
+                    <div className="relative pl-12 space-y-12 before:content-[''] before:absolute before:left-[19px] before:top-4 before:bottom-0 before:w-[2px] before:bg-slate-200">
+                      {timeline.map((event, i) => (
+                        <div key={event.id} className="relative group">
+                          {/* Dot */}
+                          <div className={`absolute -left-[31px] top-1 w-10 h-10 rounded-2xl bg-white border-2 border-slate-100 flex items-center justify-center shadow-sm group-hover:border-blue-500 group-hover:shadow-md transition-all z-10`}>
+                            {event.icon}
+                          </div>
+                          
+                          {/* Content Card */}
+                          <div 
+                            onClick={() => setSelectedEvent(event)}
+                            className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm cursor-pointer hover:border-blue-200 hover:shadow-lg transition-all"
+                          >
+                            <div className="flex justify-between items-start mb-3">
+                              <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 bg-slate-100 text-slate-500 rounded-full">
+                                {event.date}
+                              </span>
+                              <ChevronRight size={18} className="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+                            </div>
+                            <h3 className="text-xl font-black text-slate-800 mb-2">{event.title}</h3>
+                            <p className="text-slate-500 text-sm leading-relaxed">{event.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'labs' && (
+                  <div className="animate-in fade-in duration-500 space-y-8">
+                    <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden">
+                      <div className="p-8 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                        <h3 className="font-black text-xl">Tabla Comparativa</h3>
+                        <span className="text-xs font-bold text-slate-400">Últimos 4 registros</span>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="text-left border-b border-slate-50">
+                              <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Indicador</th>
+                              {labs.map(l => <th key={l.month} className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">{l.month}</th>)}
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-50">
+                            {[
+                              { key: 'glucosa', label: 'Glucosa (mg/dL)', ref: '70-110' },
+                              { key: 'hto', label: 'Hematocrito (%)', ref: '37-47' },
+                              { key: 'tropo', label: 'Troponina I (pg/mL)', ref: '< 14' }
+                            ].map(row => (
+                              <tr key={row.key} className="hover:bg-slate-50/50 transition-colors">
+                                <td className="px-8 py-6">
+                                  <p className="font-bold text-slate-700">{row.label}</p>
+                                  <p className="text-[10px] text-slate-300 font-bold">REF: {row.ref}</p>
+                                </td>
+                                {labs.map((l, i) => (
+                                  <td key={i} className="px-8 py-6">
+                                    <span className={`text-lg font-black ${
+                                      (row.key === 'glucosa' && l[row.key] > 140) || (row.key === 'tropo' && l[row.key] > 14) 
+                                      ? 'text-red-500' : 'text-slate-600'
+                                    }`}>
+                                      {l[row.key]}
+                                    </span>
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <div className="bg-orange-50 p-8 rounded-[40px] border border-orange-100">
+                       <div className="flex gap-6 items-start">
+                          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-orange-500 shadow-sm border border-orange-100 shrink-0">
+                            <FileText size={24} />
+                          </div>
+                          <div>
+                            <h4 className="font-black text-orange-900 text-xl mb-2">Microbiología (Septiembre 2023)</h4>
+                            <p className="text-orange-800 text-sm leading-relaxed opacity-80">
+                              Urocultivo detectó <strong>Staphylococcus Aureus</strong>. Se confirmó sensibilidad a Oxacilina, Gentamicina y TMS. Evolución satisfactoria tras esquema antibiótico.
+                            </p>
+                          </div>
+                       </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'profile' && (
+                  <div className="animate-in fade-in duration-500 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="bg-white rounded-[40px] p-10 border border-slate-100 shadow-sm text-center">
+                      <div className="w-32 h-32 bg-blue-100 rounded-[40px] mx-auto mb-6 flex items-center justify-center text-blue-600">
+                        <User size={64} />
+                      </div>
+                      <h2 className="text-3xl font-black text-slate-800">{patientData.name}</h2>
+                      <p className="text-slate-400 font-bold mb-6">ID {patientData.id}</p>
+                      <div className="inline-flex gap-3 bg-red-50 text-red-600 px-6 py-3 rounded-full font-black text-sm mb-10">
+                        <Droplet size={18} /> {patientData.bloodType}
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-slate-50 p-4 rounded-3xl border border-slate-100">
+                          <p className="text-[10px] font-black text-slate-300 uppercase mb-1">Edad</p>
+                          <p className="font-black text-slate-700">46 años</p>
+                        </div>
+                        <div className="bg-slate-50 p-4 rounded-3xl border border-slate-100">
+                          <p className="text-[10px] font-black text-slate-300 uppercase mb-1">Nacionalidad</p>
+                          <p className="font-black text-slate-700">Argentina</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-[40px] p-10 border border-slate-100 shadow-sm">
+                      <h3 className="text-xl font-black mb-8 flex items-center gap-2">
+                        <Clipboard size={22} className="text-blue-600" /> Esquema Farmacológico
+                      </h3>
+                      <div className="space-y-4">
+                        {patientData.meds.map((m, i) => (
+                          <div key={i} className="flex justify-between items-center p-5 bg-slate-50 rounded-[28px] border border-slate-100 hover:border-blue-200 transition-colors">
+                            <div>
+                              <p className="font-black text-slate-800">{m.name}</p>
+                              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{m.dose}</p>
+                            </div>
+                            <span className="text-[10px] font-black bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100 text-blue-600 uppercase">
+                              {m.freq}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </main>
+
+              {/* Mobile Navigation Bar */}
+              <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-200 px-8 py-5 flex justify-between items-center md:hidden z-50">
+                {[
+                  { id: 'dashboard', icon: <Activity size={24} /> },
+                  { id: 'timeline', icon: <Calendar size={24} /> },
+                  { id: 'labs', icon: <FileText size={24} /> },
+                  { id: 'profile', icon: <User size={24} /> }
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`p-2 transition-all ${activeTab === item.id ? 'text-blue-600 scale-125' : 'text-slate-300'}`}
+                  >
+                    {item.icon}
+                  </button>
+                ))}
+              </nav>
+
+              {/* Detail Modal */}
+              {selectedEvent && (
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-6" onClick={() => setSelectedEvent(null)}>
+                  <div className="bg-white rounded-[48px] max-w-xl w-full p-10 shadow-2xl animate-in zoom-in-95 duration-300" onClick={e => e.stopPropagation()}>
+                    <div className="flex justify-between items-start mb-8">
+                      <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center shadow-inner">
+                        {selectedEvent.icon}
+                      </div>
+                      <button onClick={() => setSelectedEvent(null)} className="text-slate-300 hover:text-slate-900 text-3xl font-light">×</button>
+                    </div>
+                    
+                    <div className="mb-8">
+                      <span className="text-[10px] font-black tracking-widest uppercase px-4 py-2 bg-blue-50 text-blue-600 rounded-full mb-4 inline-block">
+                        {selectedEvent.date}
+                      </span>
+                      <h3 className="text-3xl font-black text-slate-800 leading-tight">{selectedEvent.title}</h3>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      <div className="p-6 bg-slate-50 rounded-[32px] border border-slate-100">
+                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Diagnóstico / Resumen</h4>
+                        <p className="text-slate-700 font-bold leading-relaxed">{selectedEvent.description}</p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-2">Detalle Clínico</h4>
+                        <p className="text-slate-500 text-sm leading-relaxed px-2">{selectedEvent.fullDetail}</p>
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={() => setSelectedEvent(null)}
+                      className="mt-10 w-full py-5 bg-slate-900 text-white font-black rounded-3xl hover:bg-slate-800 transition-all shadow-xl shadow-slate-200"
+                    >
+                      CERRAR REGISTRO
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
