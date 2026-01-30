@@ -82,17 +82,21 @@
       const [activeTab, setActiveTab] = useState('dashboard');
       const [expandedEvents, setExpandedEvents] = useState({});
 
-      // Cálculo de edad dinámica (Estimada base 1978 según registros de 2021 con 42 años)
-      const birthYear = 1978;
-      const currentYear = new Date().getFullYear();
-      const currentAge = currentYear - birthYear;
+      // Cálculo de edad dinámica
+      const birthDate = new Date(1978, 5, 23); // 23 de Junio
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
 
       const patientData = {
         name: "Dario Oscar Lanza",
         id: "26.622.688",
         bloodType: "0 Rh Negativo",
-        birthDate: "1978 (Estimada)",
-        age: currentAge,
+        birthDate: "23/06/1978",
+        age: age,
         conditions: [
           "Diabetes Mellitus Tipo 2",
           "Hipertensión Arterial",
@@ -306,25 +310,8 @@
                     {patientData.name}
                   </h1>
 
-                  {/* Condiciones Destacadas */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {patientData.conditions.map((condition, index) => (
-                      <span key={index} className="px-3 py-1 bg-red-50 text-red-700 border border-red-100 rounded text-xs font-bold uppercase tracking-wide">
-                        {condition}
-                      </span>
-                    ))}
-                  </div>
-
                   {/* Datos Demográficos en Grilla */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-2 gap-x-8 text-sm">
-                    <div>
-                      <span className="block text-xs font-bold text-slate-400 uppercase">Fecha Nacimiento</span>
-                      <span className="font-semibold text-slate-700">{patientData.birthDate}</span>
-                    </div>
-                    <div>
-                      <span className="block text-xs font-bold text-slate-400 uppercase">Edad Actual</span>
-                      <span className="font-semibold text-slate-700">{patientData.age} Años</span>
-                    </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-2 gap-x-8 text-sm mb-6">
                     <div>
                       <span className="block text-xs font-bold text-slate-400 uppercase">DNI</span>
                       <span className="font-semibold text-slate-700">{patientData.id}</span>
@@ -335,6 +322,23 @@
                         <Droplet size={14} className="text-red-500" fill="currentColor" /> {patientData.bloodType}
                       </span>
                     </div>
+                    <div>
+                      <span className="block text-xs font-bold text-slate-400 uppercase">Fecha Nacimiento</span>
+                      <span className="font-semibold text-slate-700">{patientData.birthDate}</span>
+                    </div>
+                    <div>
+                      <span className="block text-xs font-bold text-slate-400 uppercase">Edad Actual</span>
+                      <span className="font-semibold text-slate-700">{patientData.age} Años</span>
+                    </div>
+                  </div>
+
+                  {/* Condiciones Destacadas */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {patientData.conditions.map((condition, index) => (
+                      <span key={index} className="px-3 py-1 bg-red-50 text-red-700 border border-red-100 rounded text-xs font-bold uppercase tracking-wide">
+                        {condition}
+                      </span>
+                    ))}
                   </div>
                 </div>
 
