@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏥 Historial Clínico - Darío Lanza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-elevated: #1a1a24;
+            --text: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --border: rgba(255, 255, 255, 0.08);
+            --glow: 0 0 40px rgba(99, 102, 241, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #12121a 0%, #1e1e2d 100%);
+            padding: 3rem 2rem;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .patient-card {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.5rem;
+            box-shadow: var(--glow);
+        }
+
+        .patient-info h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .patient-meta {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .blood-badge {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .conditions {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .condition {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-tabs {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 12px 0;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover {
+            background: var(--bg-elevated);
+            color: var(--text);
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .search-bar {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .year-section {
+            margin-bottom: 3rem;
+        }
+
+        .year-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 1.5rem;
+        }
+
+        .year-badge {
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .year-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .events-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .event {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .event:hover {
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .event.critical {
+            border-left: 3px solid var(--danger);
+        }
+
+        .event-header {
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            cursor: pointer;
+        }
+
+        .event-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .icon-lab {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .icon-cardio {
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .icon-surgery {
+            background: rgba(168, 85, 247, 0.15);
+        }
+
+        .icon-consult {
+            background: rgba(99, 102, 241, 0.15);
+        }
+
+        .icon-eye {
+            background: rgba(236, 72, 153, 0.15);
+        }
+
+        .icon-emergency {
+            background: rgba(245, 158, 11, 0.15);
+        }
+
+        .event-info {
+            flex: 1;
+        }
+
+        .event-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .event-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .event-expand {
+            color: var(--text-secondary);
+            transition: transform 0.3s;
+        }
+
+        .event.expanded .event-expand {
+            transform: rotate(180deg);
+        }
+
+        .event-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .event.expanded .event-body {
+            max-height: 1200px;
+        }
+
+        .event-content {
+            padding: 0 20px 20px;
+            border-top: 1px solid var(--border);
+            margin-top: 0;
+            padding-top: 20px;
+        }
+
+        .event-content p {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .event-content strong {
+            color: var(--text);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .result {
+            background: var(--bg-elevated);
+            padding: 14px;
+            border-radius: 12px;
+            border-left: 3px solid var(--success);
+        }
+
+        .result.warning {
+            border-left-color: var(--warning);
+        }
+
+        .result.danger {
+            border-left-color: var(--danger);
+        }
+
+        .result-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .meds-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 2rem;
+        }
+
+        .meds-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .med-group-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 16px 0 10px;
+        }
+
+        .med-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .med-item:last-child {
+            border-bottom: none;
+        }
+
+        .med-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--bg-elevated);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .med-name {
+            font-weight: 600;
+        }
+
+        .med-type {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 2rem 1rem;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            .patient-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .blood-badge {
+                margin: 1rem auto 0;
+            }
+
+            .conditions {
+                justify-content: center;
+            }
+
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="hero">
+        <div class="hero-content">
+            <div class="patient-card">
+                <div class="avatar">DL</div>
+                <div class="patient-info">
+                    <h1>Darío Oscar Lanza</h1>
+                    <p class="patient-meta">DNI 26.622.688 • 23/06/1978 • <span id="age"></span> años</p>
+                </div>
+                <div class="blood-badge">🩸 O Negativo</div>
+            </div>
+            <div class="conditions">
+                <span class="condition">💊 Diabetes Mellitus Tipo 2</span>
+                <span class="condition">❤️ Hipertensión Arterial</span>
+                <span class="condition">🫀 Cardiopatía Isquémica (CRM 2021)</span>
+                <span class="condition">🔴 Válvula Aórtica Bicúspide</span>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-tabs">
+        <div class="nav-inner">
+            <button class="nav-tab active" data-filter="all">📋 Todo</button>
+            <button class="nav-tab" data-filter="lab">🧪 Laboratorio</button>
+            <button class="nav-tab" data-filter="cardio">❤️ Cardiología</button>
+            <button class="nav-tab" data-filter="surgery">🏥 Cirugía</button>
+            <button class="nav-tab" data-filter="consult">👨‍⚕️ Consultas</button>
+            <button class="nav-tab" data-filter="eye">👁️ Oftalmología</button>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="search-bar">
+            <span>🔍</span>
+            <input type="text" id="search" placeholder="Buscar en historial...">
+        </div>
+
+        <section class="meds-section">
+            <h2 class="meds-title">💊 Medicación Actual</h2>
+            <div class="med-group-label">☀️ Mañana</div>
+            <div class="med-item">
+                <div class="med-icon">☀️</div>
+                <div>
+                    <div class="med-name">Bisoprolol 5mg</div>
+                    <div class="med-type">Betabloqueante</div>
+                </div>
+            </div>
+            <div class="med-item">
+                <div class="med-icon">☀️</div>
+                <div>
+                    <div class="med-name">Enalapril 5mg</div>
+                    <div class="med-type">IECA</div>
+                </div>
+            </div>
+            <div class="med-item">
+                <div class="med-icon">☀️</div>
+                <div>
+                    <div class="med-name">Dapagliflozina 10mg</div>
+                    <div class="med-type">Antidiabético iSGLT2</div>
+                </div>
+            </div>
+            <div class="med-item">
+                <div class="med-icon">☀️</div>
+                <div>
+                    <div class="med-name">Pantoprazol 20mg</div>
+                    <div class="med-type">Protector gástrico</div>
+                </div>
+            </div>
+            <div class="med-group-label">🕐 Mediodía</div>
+            <div class="med-item">
+                <div class="med-icon">🕐</div>
+                <div>
+                    <div class="med-name">Metformina 1000mg</div>
+                    <div class="med-type">Antidiabético</div>
+                </div>
+            </div>
+            <div class="med-group-label">🌙 Noche</div>
+            <div class="med-item">
+                <div class="med-icon">🌙</div>
+                <div>
+                    <div class="med-name">Enalapril 5mg</div>
+                    <div class="med-type">IECA</div>
+                </div>
+            </div>
+            <div class="med-item">
+                <div class="med-icon">🌙</div>
+                <div>
+                    <div class="med-name">Metformina 1000mg</div>
+                    <div class="med-type">Antidiabético</div>
+                </div>
+            </div>
+            <div class="med-item">
+                <div class="med-icon">🌙</div>
+                <div>
+                    <div class="med-name">Rosuvastatina 20mg</div>
+                    <div class="med-type">Estatina</div>
+                </div>
+            </div>
+            <div class="med-item">
+                <div class="med-icon">🌙</div>
+                <div>
+                    <div class="med-name">Aspirineta 100mg</div>
+                    <div class="med-type">Antiagregante</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2014 -->
+        <section class="year-section" data-year="2014">
+            <div class="year-header"><span class="year-badge">2014</span>
+                <div class="year-line"></div>
+            </div>
+            <div class="events-grid">
+                <article class="event" data-cat="lab">
+                    <div class="event-header">
+                        <div class="event-icon icon-lab">🧪</div>
+                        <div class="event-info">
+                            <div class="event-date">20 de Octubre</div>
+                            <div class="event-title">Determinación Grupo y Factor</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <div class="results-grid">
+                                <div class="result">
+                                    <div class="result-label">Grupo</div>
+                                    <div class="result-value">O</div>
+                                </div>
+                                <div class="result danger">
+                                    <div class="result-label">Factor Rh</div>
+                                    <div class="result-value">Negativo</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 2015 -->
+        <section class="year-section" data-year="2015">
+            <div class="year-header"><span class="year-badge">2015</span>
+                <div class="year-line"></div>
+            </div>
+            <div class="events-grid">
+                <article class="event" data-cat="consult">
+                    <div class="event-header">
+                        <div class="event-icon icon-emergency">🚨</div>
+                        <div class="event-info">
+                            <div class="event-date">13 de Marzo</div>
+                            <div class="event-title">Guardia - Rinofaringitis Aguda</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Síntomas:</strong> Rinorrea serosa, odinofagia, mialgias. Afebril.</p>
+                            <p><strong>Medicación:</strong> Desloratadina, Acemuk 600, Paracetamol, vapor.</p>
+                        </div>
+                    </div>
+                </article>
+                <article class="event critical" data-cat="consult">
+                    <div class="event-header">
+                        <div class="event-icon icon-consult">👨‍⚕️</div>
+                        <div class="event-info">
+                            <div class="event-date">01 de Abril</div>
+                            <div class="event-title">⚠️ Diagnóstico Inicial DBT + HTA</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Diagnóstico:</strong> Diabetes Mellitus Tipo 2 (hallazgo), Hipertensión Arterial.
+                            </p>
+                            <p><strong>Observaciones:</strong> Paciente 42 años, hipertenso medicado con atenolol. Madre
+                                diabética. Peso: 88.85 kg, TA: 130/80.</p>
+                            <div class="results-grid">
+                                <div class="result warning">
+                                    <div class="result-label">Glucemia</div>
+                                    <div class="result-value">139 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">HbA1c</div>
+                                    <div class="result-value">6.4%</div>
+                                </div>
+                                <div class="result warning">
+                                    <div class="result-label">LDL</div>
+                                    <div class="result-value">144 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">HDL</div>
+                                    <div class="result-value">48 mg/dL</div>
+                                </div>
+                            </div>
+                            <p><strong>Medicación:</strong> Metformina 850 + Sitagliptina 50 (2 comp), continúa
+                                Atenolol.</p>
+                        </div>
+                    </div>
+                </article>
+                <article class="event" data-cat="cardio">
+                    <div class="event-header">
+                        <div class="event-icon icon-cardio">❤️</div>
+                        <div class="event-info">
+                            <div class="event-date">20 de Abril</div>
+                            <div class="event-title">Ergometría - 9.6 METS</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Resultado:</strong> Prueba suficiente, detenida por fatiga muscular.</p>
+                            <p>Sin cambios isquémicos. Comportamiento adecuado de TA y FC. Clase funcional moderada a
+                                alta.</p>
+                        </div>
+                    </div>
+                </article>
+                <article class="event" data-cat="consult">
+                    <div class="event-header">
+                        <div class="event-icon icon-emergency">🚨</div>
+                        <div class="event-info">
+                            <div class="event-date">08 de Diciembre</div>
+                            <div class="event-title">Celulitis de Codo Izquierdo</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Síntomas:</strong> Dolor de 3 horas de evolución, gran edema, tétrada de Celso.
+                            </p>
+                            <p><strong>Medicación:</strong> Cefalexina 500mg, Diclofenac 75mg, hielo, reposo.</p>
+                            <p><strong>Evolución:</strong> 10/12 rotación a Amoxicilina/Clavulánico. 11/12 continúa sin
+                                síntomas sistémicos.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 2016 -->
+        <section class="year-section" data-year="2016">
+            <div class="year-header"><span class="year-badge">2016</span>
+                <div class="year-line"></div>
+            </div>
+            <div class="events-grid">
+                <article class="event" data-cat="consult">
+                    <div class="event-header">
+                        <div class="event-icon icon-consult">👨‍⚕️</div>
+                        <div class="event-info">
+                            <div class="event-date">02 de Mayo</div>
+                            <div class="event-title">Lumbalgia Mecánica</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Diagnóstico:</strong> Lumbago no especificado. Maniobra Lasègue negativa.</p>
+                            <p><strong>Estudios:</strong> RX lumbosacra sin particularidades.</p>
+                            <p><strong>Medicación:</strong> Ketorolac 30mg + Dexametasona IM. Meloxicam + Pridinol,
+                                calor local.</p>
+                        </div>
+                    </div>
+                </article>
+                <article class="event" data-cat="lab">
+                    <div class="event-header">
+                        <div class="event-icon icon-lab">🧪</div>
+                        <div class="event-info">
+                            <div class="event-date">28 de Junio</div>
+                            <div class="event-title">Control DBT - HbA1c 6.8%</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Observaciones:</strong> Poca adherencia a dieta pero buen control metabólico.</p>
+                            <div class="results-grid">
+                                <div class="result">
+                                    <div class="result-label">HbA1c</div>
+                                    <div class="result-value">6.8%</div>
+                                </div>
+                            </div>
+                            <p><strong>Indicación:</strong> Orina 24hs, comenzar actividad física.</p>
+                        </div>
+                    </div>
+                </article>
+                <article class="event" data-cat="cardio">
+                    <div class="event-header">
+                        <div class="event-icon icon-cardio">❤️</div>
+                        <div class="event-info">
+                            <div class="event-date">01 de Julio</div>
+                            <div class="event-title">M.A.P.A. (Presurometría)</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p>Monitoreo ambulatorio de presión arterial de 24 horas.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 2017 -->
+        <section class="year-section" data-year="2017">
+            <div class="year-header"><span class="year-badge">2017</span>
+                <div class="year-line"></div>
+            </div>
+            <div class="events-grid">
+                <article class="event" data-cat="consult">
+                    <div class="event-header">
+                        <div class="event-icon icon-emergency">🚨</div>
+                        <div class="event-info">
+                            <div class="event-date">14 de Agosto</div>
+                            <div class="event-title">Sinusitis</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Síntomas:</strong> Congestión nasal, tos 48hs, cefalea. Faringe levemente
+                                congestiva.</p>
+                            <p><strong>Estudios:</strong> RX senos paranasales: velamiento.</p>
+                            <p><strong>Medicación:</strong> Acemuk 600. Interconsulta ORL.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 2018 -->
+        <section class="year-section" data-year="2018">
+            <div class="year-header"><span class="year-badge">2018</span>
+                <div class="year-line"></div>
+            </div>
+            <div class="events-grid">
+                <article class="event" data-cat="consult">
+                    <div class="event-header">
+                        <div class="event-icon icon-emergency">🚨</div>
+                        <div class="event-info">
+                            <div class="event-date">09 de Abril</div>
+                            <div class="event-title">Urticaria</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Síntomas:</strong> Máculas eritematosas pruriginosas con bordes netos en tronco,
+                                miembros y cara.</p>
+                            <p><strong>Medicación:</strong> Dexametasona + Difenhidramina IM. Ataraxone. Dieta
+                                hipoalergénica.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 2019 -->
+        <section class="year-section" data-year="2019">
+            <div class="year-header"><span class="year-badge">2019</span>
+                <div class="year-line"></div>
+            </div>
+            <div class="events-grid">
+                <article class="event" data-cat="consult">
+                    <div class="event-header">
+                        <div class="event-icon icon-emergency">🚨</div>
+                        <div class="event-info">
+                            <div class="event-date">11 de Julio</div>
+                            <div class="event-title">Rinofaringitis Aguda</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Medicación actual:</strong> Atenolol, Enalapril, Metformina + Vildagliptina.</p>
+                            <p><strong>Síntomas:</strong> Odinofagia, rinorrea serosa, mialgias. Afebril.</p>
+                            <p><strong>Medicación:</strong> Paracetamol. Certificado 24hs.</p>
+                        </div>
+                    </div>
+                </article>
+                <article class="event" data-cat="consult">
+                    <div class="event-header">
+                        <div class="event-icon icon-consult">👨‍⚕️</div>
+                        <div class="event-info">
+                            <div class="event-date">31 de Julio</div>
+                            <div class="event-title">Dolor Abdominal</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Síntomas:</strong> Dolor abdominal tipo cólico de 3 días. Sin náuseas, vómitos ni
+                                diarrea.</p>
+                            <p><strong>Examen:</strong> Abdomen blando depresible, RHA ++, sin puntos dolorosos.</p>
+                            <p><strong>Medicación:</strong> Dieta + Factor AG.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 2021 -->
+        <section class="year-section" data-year="2021">
+            <div class="year-header"><span class="year-badge">2021</span>
+                <div class="year-line"></div>
+            </div>
+            <div class="events-grid">
+                <article class="event critical" data-cat="surgery">
+                    <div class="event-header">
+                        <div class="event-icon icon-surgery">🏥</div>
+                        <div class="event-info">
+                            <div class="event-date">21 de Marzo</div>
+                            <div class="event-title">⚠️ Ingreso - Síndrome Coronario Agudo</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Diagnóstico:</strong> Síndrome coronario agudo sin supradesnivel ST (Angina
+                                inestable).</p>
+                            <p><strong>Motivo:</strong> Dolor torácico (angor) durante caminata de alta intensidad.</p>
+                            <p><strong>Factores de riesgo:</strong> HTA, DBT, antecedentes heredofamiliares.</p>
+                            <div class="results-grid">
+                                <div class="result danger">
+                                    <div class="result-label">Troponina</div>
+                                    <div class="result-value">16 → 32</div>
+                                </div>
+                            </div>
+                            <p><strong>SPECT cardíaco:</strong> Isquemia severa inferior e inferoseptal.</p>
+                        </div>
+                    </div>
+                </article>
+                <article class="event critical" data-cat="cardio">
+                    <div class="event-header">
+                        <div class="event-icon icon-cardio">❤️</div>
+                        <div class="event-info">
+                            <div class="event-date">23 de Marzo</div>
+                            <div class="event-title">Cinecoronariografía - Lesión 3 Vasos</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Hallazgo:</strong> Aterosclerosis coronaria severa con lesión de tres vasos.</p>
+                            <p>• Estenosis severa en Arteria Descendente Anterior</p>
+                            <p>• Estenosis severa en Arteria Circunfleja</p>
+                            <p>• Estenosis severa en Arteria Coronaria Derecha</p>
+                            <p><strong>Alta:</strong> 24/03/2021 - Programación de cirugía.</p>
+                        </div>
+                    </div>
+                </article>
+                <article class="event critical" data-cat="surgery">
+                    <div class="event-header">
+                        <div class="event-icon icon-surgery">🫀</div>
+                        <div class="event-info">
+                            <div class="event-date">12 de Abril</div>
+                            <div class="event-title">⚠️ CIRUGÍA DE BYPASS CORONARIO (CRM)</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Cirugía:</strong> Revascularización Miocárdica (CRM/Bypass) programada.</p>
+                            <p><strong>Cirujanos:</strong> Dr. Malusardi Adriano J.M., Dr. Dotti Jorge Eduardo.</p>
+                            <p><strong>Procedimientos:</strong></p>
+                            <p>• Esternotomía mediana</p>
+                            <p>• Resección arteria mamaria interna + safenectomía</p>
+                            <p>• Circulación extracorpórea con cardioplejia</p>
+                            <p><strong>Puentes realizados:</strong></p>
+                            <p>• Mamaria a Descendente Anterior (MA-DA)</p>
+                            <p>• Puente Venoso Safeno a Obtusa Marginal 3 (PVS-OM3)</p>
+                            <p><strong>Resultado:</strong> Procedimiento bien tolerado, sin complicaciones.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 2022 -->
+        <section class="year-section" data-year="2022">
+            <div class="year-header"><span class="year-badge">2022</span>
+                <div class="year-line"></div>
+            </div>
+            <div class="events-grid">
+                <article class="event" data-cat="lab">
+                    <div class="event-header">
+                        <div class="event-icon icon-lab">🧪</div>
+                        <div class="event-info">
+                            <div class="event-date">01 de Abril</div>
+                            <div class="event-title">Laboratorio Completo - Dr. Leaden</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <div class="results-grid">
+                                <div class="result danger">
+                                    <div class="result-label">Glucemia</div>
+                                    <div class="result-value">218 mg/dL</div>
+                                </div>
+                                <div class="result danger">
+                                    <div class="result-label">HbA1c</div>
+                                    <div class="result-value">8.6%</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Colesterol</div>
+                                    <div class="result-value">144 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">LDL</div>
+                                    <div class="result-value">77 mg/dL</div>
+                                </div>
+                                <div class="result warning">
+                                    <div class="result-label">HDL</div>
+                                    <div class="result-value">43 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Triglicéridos</div>
+                                    <div class="result-value">122 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Creatinina</div>
+                                    <div class="result-value">0.90 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">TFG</div>
+                                    <div class="result-value">91.7</div>
+                                </div>
+                            </div>
+                            <p><strong>Orina:</strong> Glucosuria +++</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 2023 -->
+        <section class="year-section" data-year="2023">
+            <div class="year-header"><span class="year-badge">2023</span>
+                <div class="year-line"></div>
+            </div>
+            <div class="events-grid">
+                <article class="event" data-cat="lab">
+                    <div class="event-header">
+                        <div class="event-icon icon-lab">🧪</div>
+                        <div class="event-info">
+                            <div class="event-date">10 de Febrero</div>
+                            <div class="event-title">Laboratorio Control - Dr. Leaden</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <div class="results-grid">
+                                <div class="result warning">
+                                    <div class="result-label">Glucemia</div>
+                                    <div class="result-value">156 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Colesterol</div>
+                                    <div class="result-value">130 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">LDL</div>
+                                    <div class="result-value">59 mg/dL</div>
+                                </div>
+                                <div class="result danger">
+                                    <div class="result-label">HDL</div>
+                                    <div class="result-value">37 mg/dL</div>
+                                </div>
+                                <div class="result warning">
+                                    <div class="result-label">Triglicéridos</div>
+                                    <div class="result-value">172 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Creatinina</div>
+                                    <div class="result-value">0.81 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Microalb.</div>
+                                    <div class="result-value">6.0 mg/L</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 2024 -->
+        <section class="year-section" data-year="2024">
+            <div class="year-header"><span class="year-badge">2024</span>
+                <div class="year-line"></div>
+            </div>
+            <div class="events-grid">
+                <article class="event" data-cat="lab">
+                    <div class="event-header">
+                        <div class="event-icon icon-lab">🧪</div>
+                        <div class="event-info">
+                            <div class="event-date">29 de Mayo</div>
+                            <div class="event-title">Laboratorio</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <div class="results-grid">
+                                <div class="result danger">
+                                    <div class="result-label">Glucemia</div>
+                                    <div class="result-value">296 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Creatinina</div>
+                                    <div class="result-value">0.80 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Urea</div>
+                                    <div class="result-value">43 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">PCR</div>
+                                    <div class="result-value">2.1</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <article class="event" data-cat="lab">
+                    <div class="event-header">
+                        <div class="event-icon icon-lab">🧪</div>
+                        <div class="event-info">
+                            <div class="event-date">23 de Octubre</div>
+                            <div class="event-title">Laboratorio Completo</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <div class="results-grid">
+                                <div class="result warning">
+                                    <div class="result-label">Glucemia</div>
+                                    <div class="result-value">176 mg/dL</div>
+                                </div>
+                                <div class="result danger">
+                                    <div class="result-label">HbA1c</div>
+                                    <div class="result-value">9.4%</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Colesterol</div>
+                                    <div class="result-value">156 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">LDL</div>
+                                    <div class="result-value">88 mg/dL</div>
+                                </div>
+                                <div class="result warning">
+                                    <div class="result-label">HDL</div>
+                                    <div class="result-value">40 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Triglicéridos</div>
+                                    <div class="result-value">138 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Creatinina</div>
+                                    <div class="result-value">0.95 mg/dL</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 2025 -->
+        <section class="year-section" data-year="2025">
+            <div class="year-header"><span class="year-badge">2025</span>
+                <div class="year-line"></div>
+            </div>
+            <div class="events-grid">
+                <article class="event" data-cat="lab">
+                    <div class="event-header">
+                        <div class="event-icon icon-lab">🧪</div>
+                        <div class="event-info">
+                            <div class="event-date">01 de Septiembre</div>
+                            <div class="event-title">Laboratorio Completo</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <div class="results-grid">
+                                <div class="result warning">
+                                    <div class="result-label">Glucemia</div>
+                                    <div class="result-value">212 mg/dL</div>
+                                </div>
+                                <div class="result warning">
+                                    <div class="result-label">HbA1c</div>
+                                    <div class="result-value">7.7%</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Colesterol</div>
+                                    <div class="result-value">153 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">LDL</div>
+                                    <div class="result-value">83 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">HDL</div>
+                                    <div class="result-value">45 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Triglicéridos</div>
+                                    <div class="result-value">127 mg/dL</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Creatinina</div>
+                                    <div class="result-value">0.71 mg/dL</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <article class="event" data-cat="cardio">
+                    <div class="event-header">
+                        <div class="event-icon icon-cardio">❤️</div>
+                        <div class="event-info">
+                            <div class="event-date">03 de Septiembre</div>
+                            <div class="event-title">Ecocardiograma Doppler</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <div class="results-grid">
+                                <div class="result">
+                                    <div class="result-label">FEY</div>
+                                    <div class="result-value">75%</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Díam. Diast.</div>
+                                    <div class="result-value">50 mm</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">Raíz Aorta</div>
+                                    <div class="result-value">29 mm</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">TAPSE</div>
+                                    <div class="result-value">23 mm</div>
+                                </div>
+                            </div>
+                            <p><strong>Hallazgo:</strong> Válvula aórtica bicúspide Tipo I con rafe, apertura
+                                conservada.</p>
+                            <p>Insuficiencia tricuspídea leve. Función sistólica conservada, motilidad normal.</p>
+                        </div>
+                    </div>
+                </article>
+                <article class="event" data-cat="eye">
+                    <div class="event-header">
+                        <div class="event-icon icon-eye">👁️</div>
+                        <div class="event-info">
+                            <div class="event-date">19 de Septiembre</div>
+                            <div class="event-title">Retina Map / OCT - Dra. Corbatan</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Retina:</strong> Aplicada. Mácula con reflejo foveal. Sin retinopatía diabética.
+                            </p>
+                            <p><strong>Nervio Óptico:</strong> Papilas de amplia excavación sin otras alteraciones.</p>
+                            <div class="results-grid">
+                                <div class="result">
+                                    <div class="result-label">RNFL OD</div>
+                                    <div class="result-value">97 µm</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">RNFL OS</div>
+                                    <div class="result-value">98 µm</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <article class="event" data-cat="cardio">
+                    <div class="event-header">
+                        <div class="event-icon icon-cardio">❤️</div>
+                        <div class="event-info">
+                            <div class="event-date">13 de Octubre</div>
+                            <div class="event-title">Ergometría - 12.1 METS ✓</div>
+                        </div>
+                        <span class="event-expand">▼</span>
+                    </div>
+                    <div class="event-body">
+                        <div class="event-content">
+                            <p><strong>Operador:</strong> Dr. Fernando Petrolito (derivado por Dr. Corradi).</p>
+                            <p><strong>Protocolo:</strong> Bruce, duración 6:46 min.</p>
+                            <div class="results-grid">
+                                <div class="result">
+                                    <div class="result-label">METS</div>
+                                    <div class="result-value">12.1</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">FC Máx</div>
+                                    <div class="result-value">147 lpm</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">TA Máx</div>
+                                    <div class="result-value">150/70</div>
+                                </div>
+                                <div class="result">
+                                    <div class="result-label">% FCMP</div>
+                                    <div class="result-value">85%</div>
+                                </div>
+                            </div>
+                            <p><strong>Conclusión:</strong> Prueba suficiente. Sin angina, sin arritmias, sin cambios
+                                del ST sugestivos de isquemia. Comportamiento fisiológico de TA.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Calculate age
+        (function () {
+            const birth = new Date(1978, 5, 23);
+            const today = new Date();
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+            document.getElementById('age').textContent = age;
+        })();
+
+        // Event expansion
+        document.querySelectorAll('.event-header').forEach(header => {
+            header.addEventListener('click', () => {
+                header.closest('.event').classList.toggle('expanded');
+            });
+        });
+
+        // Filter tabs
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const filter = tab.dataset.filter;
+                document.querySelectorAll('.event').forEach(event => {
+                    if (filter === 'all' || event.dataset.cat === filter) {
+                        event.classList.remove('hidden');
+                    } else {
+                        event.classList.add('hidden');
+                    }
+                });
+                // Hide empty year sections
+                document.querySelectorAll('.year-section').forEach(section => {
+                    const visibleEvents = section.querySelectorAll('.event:not(.hidden)');
+                    section.style.display = visibleEvents.length ? 'block' : 'none';
+                });
+            });
+        });
+
+        // Search
+        document.getElementById('search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.event').forEach(event => {
+                const text = event.textContent.toLowerCase();
+                event.classList.toggle('hidden', query && !text.includes(query));
+            });
+            document.querySelectorAll('.year-section').forEach(section => {
+                const visibleEvents = section.querySelectorAll('.event:not(.hidden)');
+                section.style.display = visibleEvents.length ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+
+</html>
