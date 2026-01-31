@@ -711,8 +711,8 @@
     </section>
 
     <div class="filters">
-        <button class="filter-pill active" data-filter="all">📋 Todo</button>
-        <button class="filter-pill" data-filter="lab">🧪 Lab</button>
+        <button class="filter-pill active" data-filter="all">📋 Historia</button>
+        <button class="filter-pill" data-filter="lab" onclick="showLabs()">🧪 Lab</button>
         <button class="filter-pill" data-filter="cardio">❤️ Cardio</button>
         <button class="filter-pill" data-filter="surgery">🏥 Cirugía</button>
         <button class="filter-pill" data-filter="hospital">🛏️ Internación</button>
@@ -720,40 +720,6 @@
     </div>
 
     <main class="content" id="content">
-        <!-- 2014 -->
-        <section class="year-section" data-year="2014">
-            <div class="year-header">
-                <div class="year-dot"></div>
-                <span class="year-label">2014</span>
-                <div class="year-line"></div>
-            </div>
-
-            <div class="event" data-cat="lab">
-                <div class="event-header">
-                    <div class="event-icon icon-lab">🧪</div>
-                    <div class="event-info">
-                        <div class="event-date">20 de Octubre</div>
-                        <div class="event-title">Hemoterapia - Grupo Sanguíneo</div>
-                    </div>
-                    <div class="event-expand">▼</div>
-                </div>
-                <div class="event-body">
-                    <div class="event-content">
-                        <div class="results">
-                            <div class="result">
-                                <div class="result-label">Grupo</div>
-                                <div class="result-value">O</div>
-                            </div>
-                            <div class="result">
-                                <div class="result-label">Factor Rh</div>
-                                <div class="result-value">Negativo</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- 2015 -->
         <section class="year-section" data-year="2015">
             <div class="year-header">
@@ -947,70 +913,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="event" data-cat="lab">
-                <div class="event-header">
-                    <div class="event-icon icon-lab">🧪</div>
-                    <div class="event-info">
-                        <div class="event-date">24 de Agosto</div>
-                        <div class="event-title">Control Post-Cirugía</div>
-                    </div>
-                    <div class="event-expand">▼</div>
-                </div>
-                <div class="event-body">
-                    <div class="event-content">
-                        <div class="results">
-                            <div class="result warning">
-                                <div class="result-label">Glucemia</div>
-                                <div class="result-value">185 mg/dL</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2022 -->
-        <section class="year-section" data-year="2022">
-            <div class="year-header">
-                <div class="year-dot"></div>
-                <span class="year-label">2022</span>
-                <div class="year-line"></div>
-            </div>
-
-            <div class="event" data-cat="lab">
-                <div class="event-header">
-                    <div class="event-icon icon-lab">🧪</div>
-                    <div class="event-info">
-                        <div class="event-date">01 de Abril</div>
-                        <div class="event-title">Laboratorio - Dr. Leaden</div>
-                    </div>
-                    <div class="event-expand">▼</div>
-                </div>
-                <div class="event-body">
-                    <div class="event-content">
-                        <p><strong>Obs:</strong> Mal control metabólico</p>
-                        <div class="results">
-                            <div class="result danger">
-                                <div class="result-label">Glucemia</div>
-                                <div class="result-value">218 mg/dL</div>
-                            </div>
-                            <div class="result danger">
-                                <div class="result-label">HbA1c</div>
-                                <div class="result-value">8.6%</div>
-                            </div>
-                            <div class="result">
-                                <div class="result-label">LDL</div>
-                                <div class="result-value">77 mg/dL</div>
-                            </div>
-                            <div class="result">
-                                <div class="result-label">TG</div>
-                                <div class="result-value">122 mg/dL</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
 
         <!-- 2023 -->
@@ -1019,31 +921,6 @@
                 <div class="year-dot"></div>
                 <span class="year-label">2023</span>
                 <div class="year-line"></div>
-            </div>
-
-            <div class="event" data-cat="lab">
-                <div class="event-header">
-                    <div class="event-icon icon-lab">🧪</div>
-                    <div class="event-info">
-                        <div class="event-date">10 de Febrero</div>
-                        <div class="event-title">Laboratorio Ambulatorio</div>
-                    </div>
-                    <div class="event-expand">▼</div>
-                </div>
-                <div class="event-body">
-                    <div class="event-content">
-                        <div class="results">
-                            <div class="result warning">
-                                <div class="result-label">Glucemia</div>
-                                <div class="result-value">156 mg/dL</div>
-                            </div>
-                            <div class="result danger">
-                                <div class="result-label">HbA1c</div>
-                                <div class="result-value">8.8%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="event critical" data-cat="hospital">
@@ -1072,133 +949,12 @@
             </div>
         </section>
 
-        <!-- 2024 -->
-        <section class="year-section" data-year="2024">
-            <div class="year-header">
-                <div class="year-dot"></div>
-                <span class="year-label">2024</span>
-                <div class="year-line"></div>
-            </div>
-
-            <div class="event" data-cat="lab">
-                <div class="event-header">
-                    <div class="event-icon icon-lab">🧪</div>
-                    <div class="event-info">
-                        <div class="event-date">23 de Abril</div>
-                        <div class="event-title">Lab - Dr. Leaden</div>
-                    </div>
-                    <div class="event-expand">▼</div>
-                </div>
-                <div class="event-body">
-                    <div class="event-content">
-                        <div class="results">
-                            <div class="result danger">
-                                <div class="result-label">Glucemia</div>
-                                <div class="result-value">230 mg/dL</div>
-                            </div>
-                            <div class="result danger">
-                                <div class="result-label">HbA1c</div>
-                                <div class="result-value">9.3%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="event" data-cat="lab">
-                <div class="event-header">
-                    <div class="event-icon icon-lab">🧪</div>
-                    <div class="event-info">
-                        <div class="event-date">29 de Mayo</div>
-                        <div class="event-title">Lab - Dra. Portel</div>
-                    </div>
-                    <div class="event-expand">▼</div>
-                </div>
-                <div class="event-body">
-                    <div class="event-content">
-                        <div class="results">
-                            <div class="result danger">
-                                <div class="result-label">Glucemia</div>
-                                <div class="result-value">296 mg/dL</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="event" data-cat="lab">
-                <div class="event-header">
-                    <div class="event-icon icon-lab">🧪</div>
-                    <div class="event-info">
-                        <div class="event-date">23 de Octubre</div>
-                        <div class="event-title">Lab - Dra. Chapperon</div>
-                    </div>
-                    <div class="event-expand">▼</div>
-                </div>
-                <div class="event-body">
-                    <div class="event-content">
-                        <div class="results">
-                            <div class="result warning">
-                                <div class="result-label">Glucemia</div>
-                                <div class="result-value">176 mg/dL</div>
-                            </div>
-                            <div class="result danger">
-                                <div class="result-label">HbA1c</div>
-                                <div class="result-value">9.4%</div>
-                            </div>
-                            <div class="result">
-                                <div class="result-label">LDL</div>
-                                <div class="result-value">88 mg/dL</div>
-                            </div>
-                            <div class="result">
-                                <div class="result-label">Creat</div>
-                                <div class="result-value">0.95</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- 2025 -->
         <section class="year-section" data-year="2025">
             <div class="year-header">
                 <div class="year-dot" style="background: var(--success); box-shadow: 0 0 12px var(--success);"></div>
                 <span class="year-label">2025</span>
                 <div class="year-line"></div>
-            </div>
-
-            <div class="event" data-cat="lab">
-                <div class="event-header">
-                    <div class="event-icon icon-lab">🧪</div>
-                    <div class="event-info">
-                        <div class="event-date">01 de Septiembre</div>
-                        <div class="event-title">Lab Completo ⬆️ Mejoría</div>
-                    </div>
-                    <div class="event-expand">▼</div>
-                </div>
-                <div class="event-body">
-                    <div class="event-content">
-                        <div class="results">
-                            <div class="result danger">
-                                <div class="result-label">Glucemia</div>
-                                <div class="result-value">212 mg/dL</div>
-                            </div>
-                            <div class="result warning">
-                                <div class="result-label">HbA1c</div>
-                                <div class="result-value">7.7%</div>
-                            </div>
-                            <div class="result">
-                                <div class="result-label">LDL</div>
-                                <div class="result-value">83 mg/dL</div>
-                            </div>
-                            <div class="result">
-                                <div class="result-label">Creat</div>
-                                <div class="result-value">0.71</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="event" data-cat="cardio">
@@ -1295,6 +1051,285 @@
         </div>
     </main>
 
+    <!-- SECCIÓN LABORATORIOS (oculta por defecto) -->
+    <section id="labs-section" class="content" style="display: none; padding: 16px;">
+        <div class="year-header" style="margin-bottom: 20px;">
+            <div class="year-dot" style="background: var(--success);"></div>
+            <span class="year-label">🧪 Laboratorios</span>
+            <div class="year-line"></div>
+        </div>
+
+        <!-- 2014 - Hemoterapia -->
+        <div class="event expanded" style="margin-bottom: 12px;">
+            <div class="event-header">
+                <div class="event-icon icon-lab">🧪</div>
+                <div class="event-info">
+                    <div class="event-date">20/10/2014</div>
+                    <div class="event-title">Hemoterapia - Grupo Sanguíneo</div>
+                </div>
+            </div>
+            <div class="event-body" style="max-height: 500px;">
+                <div class="event-content">
+                    <div class="results">
+                        <div class="result">
+                            <div class="result-label">Grupo</div>
+                            <div class="result-value">O</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">Factor Rh</div>
+                            <div class="result-value">Negativo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2015 - Diagnóstico DBT -->
+        <div class="event expanded" style="margin-bottom: 12px;">
+            <div class="event-header">
+                <div class="event-icon icon-lab">🧪</div>
+                <div class="event-info">
+                    <div class="event-date">01/04/2015</div>
+                    <div class="event-title">Primer Laboratorio DBT/HTA</div>
+                </div>
+            </div>
+            <div class="event-body" style="max-height: 500px;">
+                <div class="event-content">
+                    <div class="results">
+                        <div class="result warning">
+                            <div class="result-label">Glucemia</div>
+                            <div class="result-value">139 mg/dL</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">HbA1c</div>
+                            <div class="result-value">6.4%</div>
+                        </div>
+                        <div class="result warning">
+                            <div class="result-label">LDL</div>
+                            <div class="result-value">144 mg/dL</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">Peso</div>
+                            <div class="result-value">88.8 kg</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2021 - Post Cirugía -->
+        <div class="event expanded" style="margin-bottom: 12px;">
+            <div class="event-header">
+                <div class="event-icon icon-lab">🧪</div>
+                <div class="event-info">
+                    <div class="event-date">24/08/2021</div>
+                    <div class="event-title">Control Post-Cirugía</div>
+                </div>
+            </div>
+            <div class="event-body" style="max-height: 500px;">
+                <div class="event-content">
+                    <div class="results">
+                        <div class="result warning">
+                            <div class="result-label">Glucemia</div>
+                            <div class="result-value">185 mg/dL</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">Troponina</div>
+                            <div class="result-value">&lt;3.2</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2022 - Dr. Leaden -->
+        <div class="event expanded" style="margin-bottom: 12px;">
+            <div class="event-header">
+                <div class="event-icon icon-lab">🧪</div>
+                <div class="event-info">
+                    <div class="event-date">01/04/2022</div>
+                    <div class="event-title">Laboratorio - Dr. Leaden</div>
+                </div>
+            </div>
+            <div class="event-body" style="max-height: 500px;">
+                <div class="event-content">
+                    <p><strong>Obs:</strong> Mal control metabólico</p>
+                    <div class="results">
+                        <div class="result danger">
+                            <div class="result-label">Glucemia</div>
+                            <div class="result-value">218 mg/dL</div>
+                        </div>
+                        <div class="result danger">
+                            <div class="result-label">HbA1c</div>
+                            <div class="result-value">8.6%</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">LDL</div>
+                            <div class="result-value">77 mg/dL</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">TG</div>
+                            <div class="result-value">122 mg/dL</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2023 - Febrero -->
+        <div class="event expanded" style="margin-bottom: 12px;">
+            <div class="event-header">
+                <div class="event-icon icon-lab">🧪</div>
+                <div class="event-info">
+                    <div class="event-date">10/02/2023</div>
+                    <div class="event-title">Laboratorio Ambulatorio</div>
+                </div>
+            </div>
+            <div class="event-body" style="max-height: 500px;">
+                <div class="event-content">
+                    <div class="results">
+                        <div class="result warning">
+                            <div class="result-label">Glucemia</div>
+                            <div class="result-value">156 mg/dL</div>
+                        </div>
+                        <div class="result danger">
+                            <div class="result-label">HbA1c</div>
+                            <div class="result-value">8.8%</div>
+                        </div>
+                        <div class="result warning">
+                            <div class="result-label">Vit D</div>
+                            <div class="result-value">18.5 ng/ml</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">Microalb</div>
+                            <div class="result-value">6.0 mg/l</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2024 - Abril Dr. Leaden -->
+        <div class="event expanded" style="margin-bottom: 12px;">
+            <div class="event-header">
+                <div class="event-icon icon-lab">🧪</div>
+                <div class="event-info">
+                    <div class="event-date">23/04/2024</div>
+                    <div class="event-title">Lab - Dr. Leaden</div>
+                </div>
+            </div>
+            <div class="event-body" style="max-height: 500px;">
+                <div class="event-content">
+                    <div class="results">
+                        <div class="result danger">
+                            <div class="result-label">Glucemia</div>
+                            <div class="result-value">230 mg/dL</div>
+                        </div>
+                        <div class="result danger">
+                            <div class="result-label">HbA1c</div>
+                            <div class="result-value">9.3%</div>
+                        </div>
+                        <div class="result warning">
+                            <div class="result-label">Vit D</div>
+                            <div class="result-value">14.6 ng/ml</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">TSH</div>
+                            <div class="result-value">1.11 uU/mL</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2024 - Mayo Dra. Portel -->
+        <div class="event expanded" style="margin-bottom: 12px;">
+            <div class="event-header">
+                <div class="event-icon icon-lab">🧪</div>
+                <div class="event-info">
+                    <div class="event-date">29/05/2024</div>
+                    <div class="event-title">Lab - Dra. Portel</div>
+                </div>
+            </div>
+            <div class="event-body" style="max-height: 500px;">
+                <div class="event-content">
+                    <div class="results">
+                        <div class="result danger">
+                            <div class="result-label">Glucemia</div>
+                            <div class="result-value">296 mg/dL</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2024 - Octubre Dra. Chapperon -->
+        <div class="event expanded" style="margin-bottom: 12px;">
+            <div class="event-header">
+                <div class="event-icon icon-lab">🧪</div>
+                <div class="event-info">
+                    <div class="event-date">23/10/2024</div>
+                    <div class="event-title">Lab - Dra. Chapperon</div>
+                </div>
+            </div>
+            <div class="event-body" style="max-height: 500px;">
+                <div class="event-content">
+                    <div class="results">
+                        <div class="result warning">
+                            <div class="result-label">Glucemia</div>
+                            <div class="result-value">176 mg/dL</div>
+                        </div>
+                        <div class="result danger">
+                            <div class="result-label">HbA1c</div>
+                            <div class="result-value">9.4%</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">LDL</div>
+                            <div class="result-value">88 mg/dL</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">Creat</div>
+                            <div class="result-value">0.95</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2025 - Mejoría -->
+        <div class="event expanded" style="margin-bottom: 12px;">
+            <div class="event-header">
+                <div class="event-icon icon-lab">🧪</div>
+                <div class="event-info">
+                    <div class="event-date">01/09/2025</div>
+                    <div class="event-title">Lab Completo ⬆️ Mejoría</div>
+                </div>
+            </div>
+            <div class="event-body" style="max-height: 500px;">
+                <div class="event-content">
+                    <div class="results">
+                        <div class="result danger">
+                            <div class="result-label">Glucemia</div>
+                            <div class="result-value">212 mg/dL</div>
+                        </div>
+                        <div class="result warning">
+                            <div class="result-label">HbA1c</div>
+                            <div class="result-value">7.7%</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">LDL</div>
+                            <div class="result-value">83 mg/dL</div>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">Creat</div>
+                            <div class="result-value">0.71</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <nav class="bottom-nav">
         <a href="#" class="nav-item active">
             <span class="nav-icon">📋</span>
@@ -1304,7 +1339,7 @@
             <span class="nav-icon">💊</span>
             <span>Meds</span>
         </a>
-        <a href="#" class="nav-item" onclick="filterBy('lab'); return false;">
+        <a href="#" class="nav-item" onclick="showLabs(); return false;">
             <span class="nav-icon">🧪</span>
             <span>Labs</span>
         </a>
@@ -1327,15 +1362,34 @@
             pill.addEventListener('click', () => {
                 document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
                 pill.classList.add('active');
-                filterBy(pill.dataset.filter);
+
+                if (pill.dataset.filter === 'lab') {
+                    showLabs();
+                } else {
+                    hideLabs();
+                    filterBy(pill.dataset.filter);
+                }
             });
         });
+
+        function showLabs() {
+            document.getElementById('content').style.display = 'none';
+            document.getElementById('labs-section').style.display = 'block';
+            document.querySelector('.meds-section').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function hideLabs() {
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('labs-section').style.display = 'none';
+            document.querySelector('.meds-section').style.display = 'block';
+        }
 
         function filterBy(cat) {
             const search = document.getElementById('search').value.toLowerCase();
             let visible = 0;
 
-            document.querySelectorAll('.year-section').forEach(section => {
+            document.querySelectorAll('#content .year-section').forEach(section => {
                 let hasVisible = false;
                 section.querySelectorAll('.event').forEach(event => {
                     const matchCat = cat === 'all' || event.dataset.cat === cat;
@@ -1358,12 +1412,20 @@
         // Search
         document.getElementById('search').addEventListener('input', () => {
             const active = document.querySelector('.filter-pill.active');
-            filterBy(active ? active.dataset.filter : 'all');
+            if (active && active.dataset.filter !== 'lab') {
+                filterBy(active.dataset.filter);
+            }
         });
 
         // Nav helpers
         function scrollToMeds() {
-            document.querySelector('.meds-section').scrollIntoView({ behavior: 'smooth' });
+            hideLabs();
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
+            filterBy('all');
+            setTimeout(() => {
+                document.querySelector('.meds-section').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
         }
     </script>
 </body>
