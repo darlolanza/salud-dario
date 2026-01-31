@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Historia Clínica - Dario Oscar Lanza</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeIn 0.5s ease-out forwards; }
+        
+        body { background-color: #f8fafc; }
+        
+        /* Scrollbar personalizada sutil */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.263.1"
+      }
+    }
+    </script>
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module">
+        import React, { useState, useMemo } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { 
+          Calendar, User, Activity, FileText, ClipboardList, Search, 
+          ArrowRight, Beaker, HeartPulse, Eye, Stethoscope, Info, 
+          ChevronDown, ChevronRight, Pill, Thermometer, Clock 
+        } from 'lucide-react';
+
+        const App = () => {
+          const [activeTab, setActiveTab] = useState('historial');
+          const [searchTerm, setSearchTerm] = useState('');
+
+          const paciente = {
+            nombre: "LANZA DARIO OSCAR",
+            dni: "26.622.688",
+            fechaNacimiento: "1978-06-23",
+            grupoFactor: "O Negativo",
+            peso: "85 kg",
+            altura: "1.75 m",
+            imc: "27.8 (Sobrepeso)",
+            antecedentes: ["DBT Tipo 2", "HTA", "Bypass Coronario (2021)", "Válvula Aórtica Bicúspide Tipo I"],
+            medicacion: [
+              { hora: "Mañana", farmacos: ["Bisoprolol 5mg", "Enalapril 5mg", "Dapagliflozina 10mg", "Pantoprazol 20mg"] },
+              { hora: "Mediodía", farmacos: ["Metformina 1000mg"] },
+              { hora: "Noche", farmacos: ["Rosuvastatina 20mg", "Metformina 1000mg", "Enalapril 5mg", "Aspirineta 100mg"] }
+            ]
+          };
+
+          const calcularEdad = (fecha) => {
+            const hoy = new Date();
+            const cumple = new Date(fecha);
+            let edad = hoy.getFullYear() - cumple.getFullYear();
+            const m = hoy.getMonth() - cumple.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < cumple.getDate())) edad--;
+            return edad;
+          };
+
+          const edadActual = calcularEdad(paciente.fechaNacimiento);
+
+          const historial = [
+            { fecha: '2025-10-13', evento: 'Ergometría (Prueba de Esfuerzo)', detalle: 'Capacidad funcional 12.1 METS. Sin evidencia de isquemia. Protocolo Bruce completado al 85% de la FCMT.', tipo: 'estudio', icono: <HeartPulse className="text-red-500" /> },
+            { fecha: '2025-09-19', evento: 'Control Oftalmológico (Retina Map)', detalle: 'Sin evidencia de retinopatía diabética. Espesor RNFL promedio 97/98µm. Fondo de ojo normal.', tipo: 'estudio', icono: <Eye className="text-blue-500" /> },
+            { fecha: '2025-09-03', evento: 'EcoDoppler Cardíaco', detalle: 'Válvula aórtica bicúspide Tipo I normofuncionante. FEY 75%. Insuficiencia tricuspídea leve.', tipo: 'estudio', icono: <HeartPulse className="text-pink-500" /> },
+            { fecha: '2023-09-12', evento: 'Control Post-Internación Prostatitis', detalle: 'Buena evolución clínica, afebril, sin dolor. Continúa tratamiento ATB.', tipo: 'clínica', icono: <Stethoscope className="text-green-500" /> },
+            { fecha: '2023-09-05', evento: 'Internación: Prostatitis Aguda', detalle: 'Ingreso por dolor perineal y anal. PCR 234.1. Urocultivo: S. Aureus multisensible. Tratamiento con Ceftriaxona EV.', tipo: 'internación', icono: <Thermometer className="text-orange-500" /> },
+            { fecha: '2021-04-12', evento: 'Cirugía de Bypass Coronario (CRM)', detalle: 'Bypass Aortocoronario (2 puentes: MA-DA y PVS-OM3). Cardiomiopatía isquémica severa de 3 vasos.', tipo: 'cirugía', icono: <Activity className="text-red-600" /> },
+            { fecha: '2021-03-23', evento: 'Cinecoronariografía (CCG)', detalle: 'Lesiones severas en DA (proximal), CX (media y distal) y CD. Diagnóstico de enfermedad de 3 vasos.', tipo: 'estudio', icono: <ClipboardList className="text-purple-500" /> },
+            { fecha: '2021-03-21', evento: 'Angina Inestable - Ingreso UTI', detalle: 'Dolor precordial retroesternal. Troponina curva: 16 -> 32. Isquemia severa inferior en SPECT.', tipo: 'internación', icono: <Clock className="text-red-400" /> },
+            { fecha: '2018-04-09', evento: 'Urticaria Aguda', detalle: 'Lesiones papuloeritematosas. Tratamiento con Dexa + Difenhidramina.', tipo: 'guardia', icono: <Stethoscope className="text-green-400" /> },
+            { fecha: '2016-07-02', evento: 'Traumatismo de Tórax', detalle: 'Caída de propia altura. Rx de tórax normal, sin fracturas.', tipo: 'guardia', icono: <FileText className="text-gray-500" /> },
+            { fecha: '2015-12-14', evento: 'Bursitis Olecraniana (Codo Izq)', detalle: 'Edema y dolor intenso. Confirmado por ecografía. Tratamiento con ATB.', tipo: 'clínica', icono: <Info className="text-blue-400" /> },
+            { fecha: '2015-04-01', evento: 'Diagnóstico de Diabetes Mellitus', detalle: 'Hallazgo incidental. Inicio tratamiento con Metformina + Sitagliptina.', tipo: 'diagnóstico', icono: <Beaker className="text-yellow-600" /> },
+            { fecha: '2014-10-20', evento: 'Tipificación de Grupo Sanguíneo', detalle: 'Grupo: O, Factor: RH Negativo.', tipo: 'estudio', icono: <Beaker className="text-red-400" /> },
+          ];
+
+          const laboratorios = [
+            { fecha: '2025-09-01', glucemia: '212 mg/dL', hba1c: '7.7%', cr: '0.71', u: '---', microalb: '6.0 mg/L' },
+            { fecha: '2024-10-23', glucemia: '176 mg/dL', hba1c: '9.4%', cr: '0.95', u: '33', microalb: '7.0 mg/L' },
+            { fecha: '2024-04-23', glucemia: '230 mg/dL', hba1c: '9.3%', cr: '0.81', u: '32', microalb: '---' },
+            { fecha: '2023-09-05', glucemia: '284 mg/dL', hba1c: '---', cr: '0.81', u: '23', pcr: '234.1', gb: '15900' },
+            { fecha: '2022-04-01', glucemia: '218 mg/dL', hba1c: '8.6%', cr: '0.90', u: '35', col: '144' },
+            { fecha: '2021-03-21', glucemia: '155 mg/dL', hba1c: '---', cr: '1.07', u: '27', tropo: '32.4' },
+          ];
+
+          return (
+            <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-12">
+              {/* HEADER SECTION */}
+              <header className="bg-white border-b sticky top-0 z-50 px-6 py-8 shadow-sm">
+                <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div>
+                    <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-slate-900 leading-none">
+                      {paciente.nombre}
+                    </h1>
+                    <div className="flex items-center gap-3 mt-4">
+                      <span className="bg-slate-900 text-white px-3 py-1 rounded-full text-sm font-bold tracking-widest uppercase">
+                        Paciente
+                      </span>
+                      <p className="text-2xl md:text-3xl font-light text-slate-500 tracking-tight">
+                        DNI {paciente.dni}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+                     <div className="bg-white border p-4 rounded-2xl min-w-[140px] shadow-sm">
+                        <p className="text-xs uppercase text-slate-400 font-bold tracking-widest mb-1 italic">Nacimiento</p>
+                        <p className="text-xl font-bold italic">23 JUN 1978</p>
+                        <p className="text-sm text-slate-500 font-medium italic">{edadActual} Años hoy</p>
+                     </div>
+                     <div className="bg-red-50 border border-red-100 p-4 rounded-2xl min-w-[120px] shadow-sm">
+                        <p className="text-xs uppercase text-red-400 font-bold tracking-widest mb-1 italic italic">Grupo y Factor</p>
+                        <p className="text-3xl font-black text-red-600 tracking-tighter italic italic">O-</p>
+                        <p className="text-[10px] text-red-400 uppercase font-bold italic">Negativo</p>
+                     </div>
+                  </div>
+                </div>
+              </header>
+
+              <main className="max-w-6xl mx-auto p-6 space-y-8">
+                {/* QUICK STATUS GRID */}
+                <section className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in">
+                  <div className="md:col-span-2 bg-slate-900 text-white rounded-[2rem] p-8 shadow-xl relative overflow-hidden group">
+                    <div className="absolute top-[-20px] right-[-20px] opacity-10 group-hover:scale-110 transition-transform duration-700">
+                        <Activity size={240} />
+                    </div>
+                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2 italic">
+                      <Pill className="text-blue-400 italic" size={24} /> Tratamiento Actual
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative z-10">
+                      {paciente.medicacion.map((med, idx) => (
+                        <div key={idx} className="space-y-3">
+                          <p className="text-blue-400 font-black uppercase text-xs tracking-widest flex items-center gap-2 italic">
+                            <Clock size={14} /> {med.hora}
+                          </p>
+                          <ul className="space-y-2">
+                            {med.farmacos.map((f, i) => (
+                              <li key={i} className="text-sm font-medium text-slate-300 border-l border-slate-700 pl-3 leading-relaxed italic">
+                                {f}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm space-y-6">
+                    <h3 className="text-xl font-bold flex items-center gap-2 italic">
+                      <Info className="text-slate-400 italic" size={24} /> Estado Clínico
+                    </h3>
+                    <div className="space-y-4">
+                      {paciente.antecedentes.map((ant, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-blue-500" />
+                          <p className="text-sm font-semibold text-slate-600 italic">{ant}</p>
+                        </div>
+                      ))}
+                      <div className="pt-4 mt-4 border-t border-slate-100 flex justify-between items-center italic">
+                        <span className="text-xs text-slate-400 uppercase font-bold italic">IMC</span>
+                        <span className="font-bold text-slate-700 italic">{paciente.imc}</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                {/* NAVIGATION TABS */}
+                <nav className="flex bg-slate-200/50 p-1.5 rounded-2xl w-fit mx-auto sticky top-28 z-40 backdrop-blur-md italic">
+                  <button 
+                    onClick={() => setActiveTab('historial')}
+                    className={`px-4 md:px-8 py-3 rounded-xl text-xs md:text-sm font-black transition-all duration-300 tracking-wider uppercase ${activeTab === 'historial' ? 'bg-white shadow-lg text-slate-900 scale-105' : 'text-slate-500 hover:text-slate-800 italic'}`}
+                  >
+                    Línea de Tiempo
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('estudios')}
+                    className={`px-4 md:px-8 py-3 rounded-xl text-xs md:text-sm font-black transition-all duration-300 tracking-wider uppercase ${activeTab === 'estudios' ? 'bg-white shadow-lg text-slate-900 scale-105' : 'text-slate-500 hover:text-slate-800 italic'}`}
+                  >
+                    Explorador de Estudios
+                  </button>
+                </nav>
+
+                {/* TAB CONTENT */}
+                <div className="min-h-[500px]">
+                  {activeTab === 'historial' ? (
+                    <div className="space-y-6 relative animate-in">
+                      <div className="absolute left-[2.45rem] top-8 bottom-8 w-[2px] bg-slate-200 hidden md:block" />
+                      
+                      <div className="flex gap-4 mb-8">
+                        <div className="relative w-full">
+                           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                           <input 
+                            type="text" 
+                            placeholder="Filtrar eventos, diagnósticos o médicos..."
+                            className="w-full bg-white border border-slate-200 pl-12 pr-6 py-4 rounded-2xl shadow-sm focus:ring-2 focus:ring-slate-900 outline-none transition-all italic"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                           />
+                        </div>
+                      </div>
+
+                      {historial
+                        .filter(item => 
+                          item.evento.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          item.detalle.toLowerCase().includes(searchTerm.toLowerCase()))
+                        .map((item, idx) => (
+                          <div key={idx} className="flex flex-col md:flex-row gap-6 group">
+                            <div className="md:w-32 pt-5 text-right hidden md:block italic">
+                              <p className="text-xs font-black text-slate-400 uppercase tracking-widest italic">{item.fecha.split('-')[0]}</p>
+                              <p className="text-sm font-bold text-slate-600 italic">{item.fecha.split('-')[1]}/{item.fecha.split('-')[2]}</p>
+                            </div>
+                            
+                            <div className="relative flex-1 bg-white border border-slate-100 p-6 rounded-[1.5rem] shadow-sm group-hover:shadow-md group-hover:border-slate-300 transition-all duration-300 border-l-4 border-l-slate-900">
+                              <div className="absolute -left-[2.1rem] top-6 w-10 h-10 bg-white border border-slate-200 rounded-full flex items-center justify-center shadow-sm z-10 hidden md:flex italic">
+                                {item.icono}
+                              </div>
+                              
+                              <div className="flex justify-between items-start mb-2 italic">
+                                <h4 className="text-lg font-black text-slate-800 italic">{item.evento}</h4>
+                                <span className="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest italic italic">{item.tipo}</span>
+                              </div>
+                              <p className="text-slate-600 text-sm leading-relaxed mb-4 italic italic">{item.detalle}</p>
+                              
+                              <div className="md:hidden flex items-center gap-2 mb-2 italic">
+                                 <Calendar size={12} className="text-slate-400 italic" />
+                                 <span className="text-xs font-bold text-slate-500 italic italic">{item.fecha}</span>
+                              </div>
+                            </div>
+                          </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="space-y-8 animate-in">
+                      {/* LABORATORY TRACKING */}
+                      <div className="bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-sm">
+                        <div className="bg-slate-50 p-6 border-b border-slate-200 flex justify-between items-center italic">
+                          <h3 className="text-xl font-black flex items-center gap-2 italic">
+                            <Beaker className="text-slate-400 italic" size={24} /> Evolución Metabólica (Laboratorios)
+                          </h3>
+                          <span className="text-xs text-slate-400 italic">MDRD-4 IDMS Calibrado</span>
+                        </div>
+                        <div className="overflow-x-auto italic">
+                          <table className="w-full text-left border-collapse italic">
+                            <thead>
+                              <tr className="bg-slate-50 text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 italic">
+                                <th className="px-6 py-4 italic italic">Fecha</th>
+                                <th className="px-6 py-4 italic italic text-red-600">Glucemia</th>
+                                <th className="px-6 py-4 italic italic text-red-600">HbA1c</th>
+                                <th className="px-6 py-4 italic italic">Creatinina</th>
+                                <th className="px-6 py-4 italic italic italic">Microalb</th>
+                                <th className="px-6 py-4 italic italic">Notas</th>
+                              </tr>
+                            </thead>
+                            <tbody className="text-sm font-medium text-slate-600 italic">
+                              {laboratorios.map((lab, i) => (
+                                <tr key={i} className="border-t border-slate-100 hover:bg-blue-50/30 transition-colors">
+                                  <td className="px-6 py-5 font-bold italic">{lab.fecha}</td>
+                                  <td className={`px-6 py-5 font-black italic ${parseInt(lab.glucemia) > 110 ? 'text-red-600 italic' : 'italic'}`}>{lab.glucemia}</td>
+                                  <td className="px-6 py-5 font-black italic italic">{lab.hba1c}</td>
+                                  <td className="px-6 py-5 italic italic">{lab.cr}</td>
+                                  <td className="px-6 py-5 italic italic italic">{lab.microalb}</td>
+                                  <td className="px-6 py-5 text-xs text-slate-400 italic italic">
+                                    {lab.tropo ? `Troponina: ${lab.tropo}` : lab.pcr ? `PCR: ${lab.pcr}` : '-'}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                         {/* CARD STUDIES */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 italic">
+                        <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm hover:border-blue-400 transition-colors italic">
+                          <div className="flex justify-between items-start mb-6 italic">
+                            <div className="p-3 bg-red-50 rounded-2xl italic">
+                              <HeartPulse className="text-red-500 italic" size={28} />
+                            </div>
+                            <span className="text-xs text-slate-400 italic">OCT 2025</span>
+                          </div>
+                          <h4 className="text-xl font-black mb-2 italic">Ergometría de Control</h4>
+                          <p className="text-sm text-slate-500 mb-6 italic">Evaluación de capacidad aeróbica y respuesta coronaria bajo tratamiento con Betabloqueantes.</p>
+                          <div className="grid grid-cols-2 gap-4 italic">
+                            <div className="bg-slate-50 p-4 rounded-xl italic">
+                              <p className="text-[10px] text-slate-400 uppercase font-bold italic italic">Carga Alcanzada</p>
+                              <p className="text-lg font-black italic italic">12.1 METS</p>
+                            </div>
+                            <div className="bg-slate-50 p-4 rounded-xl italic">
+                              <p className="text-[10px] text-slate-400 uppercase font-bold italic italic">FC Alcanzada</p>
+                              <p className="text-lg font-black italic italic">147 LPM</p>
+                            </div>
+                          </div>
+                          <button className="w-full mt-6 py-3 border border-slate-200 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all italic">Ver Informe Detallado</button>
+                        </div>
+
+                        <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm hover:border-blue-400 transition-colors italic">
+                           <div className="flex justify-between items-start mb-6 italic">
+                            <div className="p-3 bg-blue-50 rounded-2xl italic">
+                              <Eye className="text-blue-500 italic" size={28} />
+                            </div>
+                            <span className="text-xs text-slate-400 italic">SEP 2025</span>
+                          </div>
+                          <h4 className="text-xl font-black mb-2 italic">Mapeo Retinal & OCT</h4>
+                          <p className="text-sm text-slate-500 mb-6 italic">Screening de Microangiopatía Diabética y análisis de capa de fibras nerviosas (ONH Glaucoma).</p>
+                          <div className="space-y-3 italic">
+                            <div className="flex justify-between text-sm italic italic">
+                              <span className="text-slate-400 italic italic">RNFL Promedio OD</span>
+                              <span className="font-bold italic italic">97 µm (Normal)</span>
+                            </div>
+                            <div className="flex justify-between text-sm italic italic">
+                              <span className="text-slate-400 italic italic">RNFL Promedio OS</span>
+                              <span className="font-bold italic italic">98 µm (Normal)</span>
+                            </div>
+                            <div className="flex items-center gap-2 mt-2 bg-green-50 text-green-700 px-3 py-2 rounded-lg text-xs font-bold italic italic">
+                              <Info size={14} /> Sin Signos de Retinopatía Diabética
+                            </div>
+                          </div>
+                          <button className="w-full mt-6 py-3 border border-slate-200 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all italic italic">Ver Mapa de Retina</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </main>
+
+              {/* FOOTER */}
+              <footer className="max-w-6xl mx-auto p-12 text-center text-slate-400 italic italic">
+                <p className="text-xs font-black uppercase tracking-widest mb-2 italic italic">Historial Clínico Unificado</p>
+                <p className="text-sm italic italic">Última actualización sincronizada: 2026-01-31</p>
+              </footer>
+            </div>
+          );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
